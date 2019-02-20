@@ -285,6 +285,67 @@ document.addEventListener('DOMContentLoaded', function(){
     treeGroup.position.x -= 50;
     treeGroup.position.z += 10;
 
+    var starShape = new THREE.Shape([
+        new THREE.Vector2(0, 50),
+        new THREE.Vector2(10, 10),
+        new THREE.Vector2(40, 10),
+        new THREE.Vector2(20, -10),
+        new THREE.Vector2(30, -50),
+        new THREE.Vector2(0, -20),
+        new THREE.Vector2(-30, -50),
+        new THREE.Vector2(-20, -10),
+        new THREE.Vector2(-40, 10),
+        new THREE.Vector2(-10, 10)
+    ]);
+
+    var geometry = new THREE.ExtrudeGeometry(starShape, {
+        steps: 1,
+        amount: 4,
+        curveSegments: 1,
+        bevelEnabled: true,
+        bevelThickness: 10,
+        bevelSize: 10,
+        bevelSegments: 1
+    });
+    addNoise(geometry, 0, 0, 2);
+
+    var star = new THREE.Mesh(geometry, new THREE.MeshStandardMaterial({
+        color: 0xffd423,
+        shading: THREE.FlatShading,
+        metalness: 0,
+        roughness: 0.8,
+        refractionRatio: 0.25,
+        emissive: 0xffd423,
+        emissiveIntensity: 0.4
+    }));
+    star.scale.set(.3, .3, .3);
+    scene.add(star);
+    star.position.y += 130;
+
+    var decorationPositions = [
+        [-35, 10, 17, -0.1, 0],
+        [35, 14, 17, -0.1, 0],
+        [-5, 29, 17, -0.2, 0.2],
+        [18, 78, 18, -0.2, 0.3],
+        [37, 50, 15, -0.2, 0.3],
+        [-13, 86, 1, 0, 0],
+
+        [-35, 20, -17, 0.1, -0],
+        [25, 22, -17, 0.1, -0],
+        [-5, 29, -17, 0.2, -0.2],
+        [10, 98, -15, 0.2, 0.3],
+        [40, 40, -15, 0.2, 0.3],
+    ];
+    this.decorations = [];
+    for (var d = 0; d < decorationPositions.length; d++) {
+        var decoration = new Decoration();
+        decoration.position.set(decorationPositions[d][0], decorationPositions[d][1], decorationPositions[d][2]);
+        decoration.rotateX(decorationPositions[d][3]);
+        decoration.rotateZ(decorationPositions[d][4]);
+        scene.add(decoration);
+        decorations.push(decoration);
+    }
+
     var p = new Present();
     for(var angle = 0; angle < 360; angle += Math.random()*20+20) {
         var p = new Present();
@@ -311,8 +372,10 @@ document.addEventListener('DOMContentLoaded', function(){
 
         // Update the decoration positions
 
-    var p = new Present();
-
+        star.rotateY(0.016);
+        for(var d = 0; d < decorations.length; d++) {
+            decorations[d].updatePosition();
+        }
         // Render the scene/camera combnation
         renderer.render(scene, camera);
 
