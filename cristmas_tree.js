@@ -336,7 +336,7 @@ document.addEventListener('DOMContentLoaded', function(){
         [10, 98, -15, 0.2, 0.3],
         [40, 40, -15, 0.2, 0.3],
     ];
-    this.decorations = [];
+    decorations = [];
     for (var d = 0; d < decorationPositions.length; d++) {
         var decoration = new Decoration();
         decoration.position.set(decorationPositions[d][0], decorationPositions[d][1], decorationPositions[d][2]);
