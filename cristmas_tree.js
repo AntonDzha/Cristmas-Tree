@@ -75,7 +75,7 @@ document.addEventListener('DOMContentLoaded', function(){
     Present.prototype = Object.create(THREE.Group.prototype);
     Present.prototype.constructor = Present;
     console.log(123);
-    // We'll define a Decoration, which is just a THREE.Group with some customisation
+
     var Decoration = function() {
 
         // Run the Group constructor with the given arguments
@@ -136,6 +136,8 @@ document.addEventListener('DOMContentLoaded', function(){
         shapeTwo.castShadow = true;
         shapeTwo.receiveShadow = true;
         this.add(shapeTwo);
+        var scale = Math.random() * 0.2 + 0.4;
+        this.scale.set(scale,scale,scale);
 
     };
     Decoration.prototype = Object.create(THREE.Group.prototype);
@@ -144,7 +146,30 @@ document.addEventListener('DOMContentLoaded', function(){
         this.rotationPosition += this.rotationSpeed;
         this.rotation.y = (Math.sin(this.rotationPosition));
     };
+    var Leaf = function() {
+        THREE.Group.apply(this, arguments);
+        var leaf = new THREE.Mesh(
+            new THREE.TorusGeometry(.8,1.6,3,4),
+            new THREE.MeshStandardMaterial( {
+                color: 0x0b8450,
+                shading: THREE.FlatShading ,
+                metalness: 0,
+                roughness: 0.8,
+                refractionRatio: 0.25
+            } )
+        );
+        //leaf.geometry.vertices[4].y -=1;
+        leaf.rotateX(Math.random()*Math.PI*2);
+        leaf.rotateZ(Math.random()*Math.PI*2);
+        leaf.rotateY(Math.random()*Math.PI*2);
+        leaf.receiveShadow = true;
+        leaf.castShadow = true;
 
+        this.add(leaf);
+
+    }
+    Leaf.prototype = Object.create(THREE.Group.prototype);
+    Leaf.prototype.constructor = Leaf;
     // Create a scene which will hold all our meshes to be rendered
     var scene = new THREE.Scene();
 
@@ -178,13 +203,13 @@ document.addEventListener('DOMContentLoaded', function(){
     // Append to the document
     document.body.appendChild( renderer.domElement );
 
-    // Add an ambient lights
+
     var ambientLight = new THREE.AmbientLight( 0xffffff, 0.3 );
     scene.add( ambientLight );
 
-    // Add a point light that will cast shadows
-    var pointLight = new THREE.PointLight( 0xffffff, 1 );
-    pointLight.position.set( 25, 50, 25 );
+
+    var pointLight = new THREE.PointLight( 0xffffff,.8 );
+    pointLight.position.set( 80, 160, 120 );
     pointLight.castShadow = true;
     pointLight.shadow.mapSize.width = 1024;
     pointLight.shadow.mapSize.height = 1024;
@@ -194,9 +219,10 @@ document.addEventListener('DOMContentLoaded', function(){
     var shadowMaterial = new THREE.ShadowMaterial( { color: 0xeeeeee } );
     shadowMaterial.opacity = 0.5;
     var groundMesh = new THREE.Mesh(
-        new THREE.BoxGeometry( 100, .1, 100 ),
+        new THREE.BoxGeometry( 1000, .1, 1000 ),
         shadowMaterial
     );
+    groundMesh.position.y -=5;
     groundMesh.receiveShadow = true;
     scene.add( groundMesh );
 
@@ -277,6 +303,12 @@ document.addEventListener('DOMContentLoaded', function(){
     mesh.castShadow = true;
     mesh.receiveShadow = true;
     treeGroup.add( mesh );
+
+    for(var x = 0; x < logoGeometry.vertices.length; x++) {
+        var leaf = new Leaf();
+        leaf.position.copy(logoGeometry.vertices[x]);
+        treeGroup.add(leaf);
+    }
 
     scene.add(treeGroup);
     treeGroup.rotateZ(Math.PI);
