@@ -353,6 +353,8 @@ document.addEventListener('DOMContentLoaded', function(){
     star.scale.set(.3, .3, .3);
     scene.add(star);
     star.position.y += 130;
+    star.castShadow = true;
+    star.receiveShadow = true;
 
     var decorationPositions = [
         [-35, 10, 17, -0.1, 0],
@@ -381,7 +383,7 @@ document.addEventListener('DOMContentLoaded', function(){
     var p = new Present();
     for(var angle = 0; angle < 360; angle += Math.random()*20+20) {
         var p = new Present();
-        var radius = Math.random() * 40 + 50;
+        var radius = Math.random() * 40 + 20;
         p.position.x =  Math.cos(angle * Math.PI / 180) * radius;
         p.position.z =  Math.sin(angle * Math.PI / 180) * radius;
         p.scale.set(Math.random() + 1, Math.random() + 1,Math.random() + 1);
